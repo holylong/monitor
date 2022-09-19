@@ -3,4 +3,6 @@
 
 
 ## todos
-* keyboard monitor 
+* keyboard monitor   OK
+* mouse monitor      OK
+* clipboard monitor   X
