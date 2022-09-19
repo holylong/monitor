@@ -17,12 +17,9 @@ LRESULT KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
     {
         if (WM_KEYDOWN == wParam || WM_SYSKEYDOWN == wParam)
         {
-//            if (Key_Info->vkCode <= 107 && Key_Info->vkCode >= 65)
+            if (KeyboardHistory::instance())
             {
-                if (KeyboardHistory::instance())
-                {
-                    KeyboardHistory::instance()->setkeyValue(Key_Info->vkCode);
-                }
+                KeyboardHistory::instance()->setkeyValue(Key_Info->vkCode);
             }
         }
     }
