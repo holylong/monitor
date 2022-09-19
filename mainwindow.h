@@ -10,6 +10,12 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+enum KeyType{
+    KtUnknown,
+    KtKeyboard,
+    KtMouse
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -21,6 +27,15 @@ public:
 
 private:
     void InitLayout();
+
+    void TrySave();
+    /**
+     * @brief 更新记录值
+     * 
+     * @param name 
+     * @param type 0 keyboard 1 mouse 
+     */
+    void UpdateValue(const QString& name, KeyType type);
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

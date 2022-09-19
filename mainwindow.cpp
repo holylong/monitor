@@ -19,33 +19,74 @@ MainWindow::MainWindow(QWidget *parent)
                   if(_dateStr != QDate::currentDate().toString("yyyy-MM-dd")){
                       _dateStr = QDate::currentDate().toString("yyyy-MM-dd");
                       _keynum = 0;
+                      _mousenum = 0;
                   }
-                  QString keystr = "keyboard:";
-                  keystr += QString::number(++_keynum);
-                  _keyboard->setText(keystr);
-                  _config->updateTodayKeyBoardValue(_keynum);
-                  _step++;
-                  if(_step == 20){
-                      _step = 0;
-                      _config->saveConfig(_configPath);
-                  }
+                  UpdateValue("keyboard", KyKeyboard);
+                  TrySave();
             });
 
     connect(MouseHistory::instance(), &MouseHistory::getKey, [=](int key){
         if(_dateStr != QDate::currentDate().toString("yyyy-MM-dd")){
             _dateStr = QDate::currentDate().toString("yyyy-MM-dd");
             _mousenum = 0;
+            _keynum = 0;
         }
-        QString mousestr = "mouse:";
-        mousestr += QString::number(++_mousenum);
-        _mouse->setText(mousestr);
-        _config->updateTodayMouseValue(_mousenum);
+        UpdateValue("mouse", KtMouse);
     });
 
     startKeyBoardHook();
     startMouseHook();
 
     InitLayout();
+}
+
+void MainWindow::UpdateValue(const QString& name, KeyType type));
+{   
+    switch(type){
+    case KtKeyboard:
+        {
+            QString keystr = name;
+            keystr += ":";
+            keystr += QString::number(++_keynum);
+            _keyboard->setText(keystr);
+            _config->updateTodayKeyBoardValue(_keynum);
+
+            QString mousestr = name;
+            mousestr += ":";
+            mousestr += QString::number(_mousenum);
+            _mouse->setText(mousestr);
+            _config->updateTodayMouseValue(_mousenum);
+        }
+        break;
+    case KtMouse:
+        {
+            QString mousestr = name;
+            mousestr += ":";
+            mousestr += QString::number(++_mousenum);
+            _mouse->setText(mousestr);
+            _config->updateTodayMouseValue(_mousenum);
+
+            QString keystr = name;
+            keystr += ":";
+            keystr += QString::number(_keynum);
+            _keyboard->setText(keystr);
+            _config->updateTodayKeyBoardValue(_keynum);
+        }
+        break;
+    default:
+        qDebug() << "==>> get value type error";
+        break;
+    }
+        
+}
+
+void MainWindow::TrySave()
+{
+    _step++;
+    if(_step == 20){
+        _step = 0;
+        _config->saveConfig(_configPath);
+    }
 }
 
 void MainWindow::InitLayout()
