@@ -14,7 +14,7 @@ enum KeyType{
     KtUnknown,
     KtKeyboard,
     KtMouse
-}
+};
 
 class MainWindow : public QMainWindow
 {
@@ -35,7 +35,7 @@ private:
      * @param name 
      * @param type 0 keyboard 1 mouse 
      */
-    void UpdateValue(const QString& name, KeyType type);
+    void UpdateValue();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

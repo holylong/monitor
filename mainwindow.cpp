@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
                       _keynum = 0;
                       _mousenum = 0;
                   }
-                  UpdateValue("keyboard", KyKeyboard);
+                  ++_keynum;
+                  UpdateValue();
                   TrySave();
             });
 
@@ -31,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
             _mousenum = 0;
             _keynum = 0;
         }
-        UpdateValue("mouse", KtMouse);
+        ++_mousenum;
+        UpdateValue();
     });
 
     startKeyBoardHook();
@@ -40,44 +42,13 @@ MainWindow::MainWindow(QWidget *parent)
     InitLayout();
 }
 
-void MainWindow::UpdateValue(const QString& name, KeyType type));
+void MainWindow::UpdateValue()
 {   
-    switch(type){
-    case KtKeyboard:
-        {
-            QString keystr = name;
-            keystr += ":";
-            keystr += QString::number(++_keynum);
-            _keyboard->setText(keystr);
-            _config->updateTodayKeyBoardValue(_keynum);
+    _keyboard->setText("keyboard:" + QString::number(_keynum));
+    _config->updateTodayKeyBoardValue(_keynum);
 
-            QString mousestr = name;
-            mousestr += ":";
-            mousestr += QString::number(_mousenum);
-            _mouse->setText(mousestr);
-            _config->updateTodayMouseValue(_mousenum);
-        }
-        break;
-    case KtMouse:
-        {
-            QString mousestr = name;
-            mousestr += ":";
-            mousestr += QString::number(++_mousenum);
-            _mouse->setText(mousestr);
-            _config->updateTodayMouseValue(_mousenum);
-
-            QString keystr = name;
-            keystr += ":";
-            keystr += QString::number(_keynum);
-            _keyboard->setText(keystr);
-            _config->updateTodayKeyBoardValue(_keynum);
-        }
-        break;
-    default:
-        qDebug() << "==>> get value type error";
-        break;
-    }
-        
+    _mouse->setText("mouse:" + QString::number(_mousenum));
+    _config->updateTodayMouseValue(_mousenum);    
 }
 
 void MainWindow::TrySave()
