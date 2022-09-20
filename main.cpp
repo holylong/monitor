@@ -4,9 +4,9 @@
 #include <QHotkey>
 #include <QDebug>
 #include <signal.h>
-
+#ifdef BUILD_RELEASE
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
-
+#endif
 void CtrlC(int){
     qDebug() << "close program";
     exit(0);

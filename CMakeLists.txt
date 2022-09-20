@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 
 project(monitor VERSION 0.1 LANGUAGES CXX)
 
+option(CMAKE_BUILD_RELEASE "debug or release" ON)
+
+if(CMAKE_BUILD_RELEASE)
+add_definitions(-DBUILD_RELEASE)
+endif()
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)

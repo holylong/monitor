@@ -72,6 +72,9 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam)
                 MouseHistory::instance()->setkeyValue(1);
             }
         }
+
+        // PMSLLHOOKSTRUCT p = (PMSLLHOOKSTRUCT)lParam;
+        // qDebug() << "x:" <<  p->pt.x << " y:" << p->pt.y;
     }
     return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
 }
