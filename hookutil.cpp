@@ -85,7 +85,7 @@ BOOL startMouseHook()
     {
         return FALSE;
     }
-    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, ModuleFromAddress((PVOID)KeyboardHookProc), NULL);
+    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, ModuleFromAddress((PVOID)MouseProc), NULL);
     if (NULL == hMouseHook)
     {
         qDebug() << "regiter hook for mouse failed";

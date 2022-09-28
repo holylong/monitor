@@ -16,6 +16,8 @@ enum KeyType{
     KtMouse
 };
 
+class Networker;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -37,6 +39,13 @@ private:
      */
     void UpdateValue();
 
+    void InitContextMenu();
+
+private slots:
+    void UpdateNetworker(const QString& in, const QString& out);
+    void OnMoreInfoCallback();
+    void OnHideInfoCallback();
+
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -44,11 +53,16 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    QLabel         *_keyboard;
+    QLabel         *_labelKeyboard;
     long           _keynum{0};
-    QLabel         *_mouse;
+    QLabel         *_labelMouse;
     long           _mousenum{0};
     QPixmap        _pixmap;
+
+    QLabel         *_labelUpload;
+    QLabel         *_labelDownload;
+    QLabel         *_labelCpu;
+    QLabel         *_labelMemory;
 
     feiker::Config        *_config;
     QString        _configPath;
@@ -59,5 +73,11 @@ private:
 
     //mouse move
     QPoint         _pressPos;
+
+    Networker      *_netWorker;
+
+    QMenu          *_ctxMenu;
+    QAction        *_moreInfoAction;
+    QAction        *_hideInfoAction;
 };
 #endif // MAINWINDOW_H
