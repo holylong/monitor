@@ -6,6 +6,8 @@ option(CMAKE_BUILD_RELEASE "debug or release" ON)
 
 if(CMAKE_BUILD_RELEASE)
 add_definitions(-DBUILD_RELEASE)
+set(CMAKE_BUILD_TYPE "RELEASE")
+set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -16,9 +18,6 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE "RELEASE")
-
-set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
 
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
@@ -33,8 +32,8 @@ set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Charts DataVisualization REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Charts DataVisualization REQUIRED)
 
 if(MSVC)
 file(GLOB hotkey_SRC ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey_win.cpp
@@ -55,6 +54,11 @@ endif(MSVC)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/QHotKey)
 
+#db
+file(GLOB DB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/db/sqlite3ext.h
+                  ${CMAKE_CURRENT_SOURCE_DIR}/db/sqlite3.h
+                  ${CMAKE_CURRENT_SOURCE_DIR}/db/sqlite3.c)
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
@@ -72,7 +76,31 @@ set(PROJECT_SOURCES
 
         networker.cpp networker.h
         stringutil.h
+
+        tipsdialog.ui
+        tipsdialog.cpp
+        tipsdialog.h
+
+        #chart
+        chartwidget.h chartwidget.cpp
+
+        #zoomline
+        chart/zoomlinechartview.h chart/zoomlinechartview.cpp
+        chart/zoomlinechart.h chart/zoomlinechart.cpp
+        chart/customtablemodel.h chart/customtablemodel.cpp
+        chart/tablewidget.h chart/tablewidget.cpp
+        chart/boxdatareader.h chart/boxdatareader.cpp
+
+        # rainfall
+        chart/rainfall/rainfallgraph.h chart/rainfall/rainfallgraph.cpp
+        chart/rainfall/variantbardatamapping.h chart/rainfall/variantbardatamapping.cpp
+        chart/rainfall/variantbardataproxy.h chart/rainfall/variantbardataproxy.cpp
+        chart/rainfall/variantdataset.h chart/rainfall/variantdataset.cpp
+
+        config.cpp
 )
+
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(monitor
@@ -91,7 +119,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(monitor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(monitor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts Qt${QT_VERSION_MAJOR}::DataVisualization)
 
 set_target_properties(monitor PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

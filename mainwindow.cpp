@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "chartwidget.h"
+
 #include <keyboardhistory.h>
 #include <mousehistory.h>
 #include <QDebug>
@@ -66,13 +68,26 @@ void MainWindow::InitContextMenu()
     });
 
     _ctxMenu = new QMenu;
+    _quitAction = new QAction(tr("Quit"));
     _moreInfoAction = new QAction("显示更多信息");
     _hideInfoAction = new QAction("隐藏更多信息");
+
+    QAction *chartAction = new QAction("显示图表");
+
     _ctxMenu->addAction(_moreInfoAction);
     _ctxMenu->addAction(_hideInfoAction);
+    _ctxMenu->addAction(chartAction);
+    _ctxMenu->addAction(_quitAction);
 
     connect(_moreInfoAction, SIGNAL(triggered()), this, SLOT(OnMoreInfoCallback()));
     connect(_hideInfoAction, SIGNAL(triggered()), this, SLOT(OnHideInfoCallback()));
+    connect(_quitAction, SIGNAL(triggered()), this, SLOT(OnAppQuit()));
+
+    _chartWidget = new ChartWidget();
+
+    QObject::connect(chartAction, &QAction::triggered, [&]{
+        _chartWidget->show();
+    });
 }
 
 void MainWindow::OnMoreInfoCallback()
@@ -89,13 +104,21 @@ void MainWindow::OnHideInfoCallback()
     _labelMemory->hide();
 }
 
+
+void MainWindow::OnAppQuit()
+{
+   qApp->quit();
+}
+
 void MainWindow::UpdateValue()
 {   
     _labelKeyboard->setText("键盘次数:" + QString::number(_keynum));
-    _config->updateTodayKeyBoardValue(_keynum);
+//    _config->updateTodayKeyBoardValue(_keynum);
+    feiker::Config::Instance().updateTodayKeyBoardValue(_keynum);
 
     _labelMouse->setText("鼠标次数:" + QString::number(_mousenum));
-    _config->updateTodayMouseValue(_mousenum);    
+//    _config->updateTodayMouseValue(_mousenum);
+    feiker::Config::Instance().updateTodayMouseValue(_mousenum);
 }
 
 void MainWindow::TrySave()
@@ -103,19 +126,25 @@ void MainWindow::TrySave()
     _step++;
     if(_step == 20){
         _step = 0;
-        _config->saveConfig(_configPath);
+//        _config->saveConfig(_configPath);
+        feiker::Config::Instance().saveConfig(_configPath);
     }
 }
 
 void MainWindow::InitLayout()
 {
-    _config = new feiker::Config;
     _configPath = QDir::currentPath();
     _configPath += "/config.json";
+#if 0
+    _config = new feiker::Config;
     _config->loadConfig(_configPath);
-
     _keynum = _config->getTodayKeyBoardValue();
     _mousenum = _config->getTodayMouseValue();
+#else
+    feiker::Config::Instance().loadConfig(_configPath);
+    _keynum = feiker::Config::Instance().getTodayKeyBoardValue();
+    _mousenum = feiker::Config::Instance().getTodayMouseValue();
+#endif
 
     setFixedSize(QSize(212,50));
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SplashScreen);
@@ -201,8 +230,10 @@ MainWindow::~MainWindow()
     qDebug() << "release window";
     stopKeyBoardHook();
     stopMouseHook();
-    _config->saveConfig(_configPath);
-    delete _config;
+//    _config->saveConfig(_configPath);
+//    delete _config;
+
+    feiker::Config::Instance().saveConfig(_configPath);
     delete ui;
 
 }

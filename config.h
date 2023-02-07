@@ -15,6 +15,10 @@ namespace feiker{
     class Config : public QObject{
          Q_OBJECT
     public:
+        static Config &Instance(){
+            return _instance;
+        }
+
         Config(QObject* parent = nullptr):QObject(parent)
         {
 
@@ -120,12 +124,19 @@ namespace feiker{
             return 0;
         }
 
+        QVector<QMap<QString, QMap<QString, QString>>> GetAllData(){
+            QDate date = QDate::currentDate();
+            QDate oldDate(2022, 1, 1);
+        }
+
     private:
         QJsonObject _obj;
         QJsonObject _innerObj;
         QString     _path;
         long        _kvalue;
         long        _mvalue;
+
+        static Config  _instance;
     };
 }
 
