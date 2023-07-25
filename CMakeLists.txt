@@ -7,7 +7,7 @@ option(CMAKE_BUILD_RELEASE "debug or release" ON)
 if(CMAKE_BUILD_RELEASE)
 add_definitions(-DBUILD_RELEASE)
 set(CMAKE_BUILD_TYPE "RELEASE")
-set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -32,8 +32,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Charts DataVisualization REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Charts DataVisualization REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Charts DataVisualization LinguistTools WinExtras REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Charts DataVisualization LinguistTools WinExtras REQUIRED)
+
+set(TS_FILES monitor_zh_CN.ts)
 
 if(MSVC)
 file(GLOB hotkey_SRC ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey_win.cpp
@@ -81,8 +83,18 @@ set(PROJECT_SOURCES
         tipsdialog.cpp
         tipsdialog.h
 
+        # date thread
+        qdatethread.h qdatethread.cpp
+
         #chart
         chartwidget.h chartwidget.cpp
+
+        # CPU memory
+        cpumemoryprofiler.h cpumemoryprofiler.cpp
+
+        # frame player
+        frameplayer.h frameplayer.cpp
+        framethread.h framethread.cpp
 
         #zoomline
         chart/zoomlinechartview.h chart/zoomlinechartview.cpp
@@ -98,6 +110,8 @@ set(PROJECT_SOURCES
         chart/rainfall/variantdataset.h chart/rainfall/variantdataset.cpp
 
         config.cpp
+
+        ${TS_FILES}
 )
 
 
@@ -107,6 +121,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
+    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 else()
     if(ANDROID)
         add_library(monitor SHARED
@@ -117,9 +132,13 @@ else()
             ${PROJECT_SOURCES}
         )
     endif()
+    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(monitor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts Qt${QT_VERSION_MAJOR}::DataVisualization)
+target_link_libraries(monitor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                      Qt${QT_VERSION_MAJOR}::Charts
+                                      Qt${QT_VERSION_MAJOR}::WinExtras
+                                      Qt${QT_VERSION_MAJOR}::DataVisualization)
 
 set_target_properties(monitor PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

@@ -49,7 +49,8 @@ protected:
 
 
 signals:
-    void ReportNetworker(const QString& in, const QString& out);
+    void reportNetworker(const QString& in, const QString& out);
+    void reportCpuMemory(double cpu, const QString& memo);
 
 private:
     std::vector<NetworkConn> _conns;

@@ -3,6 +3,7 @@
 //#include <QApplication>
 #include <QHotkey>
 #include <QDebug>
+#include <QTranslator>
 #include <signal.h>
 
 #include "tipsdialog.h"
@@ -10,6 +11,7 @@
 #ifdef BUILD_RELEASE
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
 #endif
+
 void CtrlC(int){
     qDebug() << "close program";
     exit(0);
@@ -22,6 +24,18 @@ void Release(){
 int main(int argc, char *argv[])
 {
     MrGlobalApplication app(argc, argv);
+
+    QTranslator translator;
+    const QStringList uiLanguages = QLocale::system().uiLanguages();
+    for (const QString &locale : uiLanguages) {
+        const QString baseName = "monitor_" + QLocale(locale).name();
+        qDebug() << baseName;
+        if (translator.load(":/res/i18n/" + baseName)) {
+            app.installTranslator(&translator);
+            break;
+        }
+    }
+
     MainWindow w;
     TipsDialog dialog(&w);
 //    TipsDialog dialog;

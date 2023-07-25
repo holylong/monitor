@@ -1,102 +1,102 @@
 {
     "2022-08-24": {
-        "keyboard":57240,
+        "keyboard": 57240,
         "mouse": 0
     },
     "2022-08-25": {
-        "keyboard":18193,
+        "keyboard": 18193,
         "mouse": 0
     },
     "2022-08-26": {
-        "keyboard":18701,
+        "keyboard": 18701,
         "mouse": 0
     },
     "2022-08-27": {
-        "keyboard":2209,
+        "keyboard": 2209,
         "mouse": 0
     },
     "2022-08-28": {
-        "keyboard":2901,
+        "keyboard": 2901,
         "mouse": 0
     },
     "2022-08-29": {
-        "keyboard":114920,
+        "keyboard": 114920,
         "mouse": 0
     },
     "2022-08-30": {
-        "keyboard":3523,
+        "keyboard": 3523,
         "mouse": 0
     },
     "2022-08-31": {
-        "keyboard":22202,
+        "keyboard": 22202,
         "mouse": 0
     },
     "2022-09-01": {
-        "keyboard":13606,
+        "keyboard": 13606,
         "mouse": 0
     },
     "2022-09-02": {
-        "keyboard":17809,
+        "keyboard": 17809,
         "mouse": 0
     },
     "2022-09-03": {
-        "keyboard":5643,
+        "keyboard": 5643,
         "mouse": 0
     },
     "2022-09-04": {
-        "keyboard":1440,
+        "keyboard": 1440,
         "mouse": 0
     },
     "2022-09-05": {
-        "keyboard":24672,
+        "keyboard": 24672,
         "mouse": 0
     },
     "2022-09-06": {
-        "keyboard":14181,
+        "keyboard": 14181,
         "mouse": 0
     },
     "2022-09-07": {
-        "keyboard":18449,
+        "keyboard": 18449,
         "mouse": 0
     },
     "2022-09-08": {
-        "keyboard":28577,
+        "keyboard": 28577,
         "mouse": 3539
     },
     "2022-09-09": {
-        "keyboard":24678,
+        "keyboard": 24678,
         "mouse": 3539
     },
     "2022-09-10": {
-        "keyboard":10724,
+        "keyboard": 10724,
         "mouse": 3539
     },
     "2022-09-11": {
-        "keyboard":954,
+        "keyboard": 954,
         "mouse": 3539
     },
     "2022-09-12": {
-        "keyboard":16,
+        "keyboard": 16,
         "mouse": 3539
     },
     "2022-09-13": {
-        "keyboard":15289,
+        "keyboard": 15289,
         "mouse": 3539
     },
     "2022-09-14": {
-        "keyboard":18238,
+        "keyboard": 18238,
         "mouse": 3539
     },
     "2022-09-15": {
-        "keyboard":20540,
+        "keyboard": 20540,
         "mouse": 3539
     },
     "2022-09-16": {
-        "keyboard":24326,
+        "keyboard": 24326,
         "mouse": 3539
     },
     "2022-09-17": {
-        "keyboard":6502,
+        "keyboard": 6502,
         "mouse": 3539
     },
     "2022-09-18": {
@@ -234,6 +234,10 @@
     "2022-10-27": {
         "keyboard": 8209,
         "mouse": 1321
+    },
+    "2023-04-07": {
+        "keyboard": 316,
+        "mouse": 209
     },
     "calculatePath": null,
     "exector": "monitor",

@@ -10,12 +10,17 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <networker.h>
 #include <QMenu>
+#include <QSystemTrayIcon>
+
+#include "frameplayer.h"
+#include "qdatethread.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), _dateThread(new QDateThread())
 {
     ui->setupUi(this);
     _dateStr = QDate::currentDate().toString("yyyy-MM-dd");
@@ -27,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
                       _mousenum = 0;
                   }
                   ++_keynum;
-                  UpdateValue();
-                  TrySave();
+                  updateValue();
+                  trySave();
             });
 
     connect(MouseHistory::instance(), &MouseHistory::getKey, [=](int key){
@@ -38,29 +43,69 @@ MainWindow::MainWindow(QWidget *parent)
             _keynum = 0;
         }
         ++_mousenum;
-        UpdateValue();
+        updateValue();
     });
 
     startKeyBoardHook();
     startMouseHook();
 
-    InitLayout();
+    initLayout();
 
-    InitContextMenu();
+    initContextMenu();
+    initSystemTrayIcon();
 
     _netWorker = new Networker();
-    QObject::connect(_netWorker, SIGNAL(ReportNetworker(const QString&, const QString&)), 
-    this, SLOT(UpdateNetworker(const QString&, const QString&)));
+
+    QObject::connect(_netWorker, SIGNAL(reportNetworker(const QString&, const QString&)),
+    this, SLOT(onUpdateNetworker(const QString&, const QString&)));
+    QObject::connect(_netWorker, SIGNAL(reportCpuMemory(double, const QString&)),
+    this, SLOT(onUpdateCpuMemory(double, const QString&)));
+
+    QObject::connect(this, SIGNAL(reportCpuUsage(double)),  _catWidget, SLOT(onUpdateCpuUsage(double)));
+
     _netWorker->start();
+
+    QObject::connect(_dateThread, &QDateThread::sendDate, [=](QString d, QString dt){
+        _labelDays->setText(tr("Days") + ":" + d);
+        _labelSeconds->setText(tr("Seconds") + ":" + dt);
+    });
+    _dateThread->start();
 }
 
-void MainWindow::UpdateNetworker(const QString& in, const QString& out)
+void MainWindow::onUpdateNetworker(const QString& in, const QString& out)
 {
     _labelUpload->setText(out);
     _labelDownload->setText(in);
 }
 
-void MainWindow::InitContextMenu()
+void MainWindow::onUpdateCpuMemory(double cpu, const QString& memo)
+{
+    // qDebug() << "cpu:" << cpu << "memo:" << memo;
+    emit reportCpuUsage(cpu);
+    _labelCpu->setText(tr("CPU:") + QString::number(cpu, 10, 2) + "%");
+    _labelMemory->setText(tr("Memory:") + memo + "%");
+    ui->centralwidget->repaint();
+}
+
+void MainWindow::initSystemTrayIcon()
+{
+    _trayIcon = new QSystemTrayIcon();
+    _trayMenu = new QMenu();
+
+//    QAction *actionExit = new QAction();
+//    QObject::connect(actionExit, &QAction::triggered, []{
+//        qDebug() << "app wait quit";
+//    });
+//    actionExit->setText("Quit");
+//    actionExit->setIcon(QIcon(":/res/quit.png"));
+    _trayMenu->addAction(_quitAction);
+
+    _trayIcon->setContextMenu(_trayMenu);
+    _trayIcon->setIcon(QIcon(":/res/monitor.png"));
+    _trayIcon->show();
+}
+
+void MainWindow::initContextMenu()
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, &MainWindow::customContextMenuRequested, this, [=]{
@@ -69,48 +114,99 @@ void MainWindow::InitContextMenu()
 
     _ctxMenu = new QMenu;
     _quitAction = new QAction(tr("Quit"));
-    _moreInfoAction = new QAction("显示更多信息");
-    _hideInfoAction = new QAction("隐藏更多信息");
+    _quitAction->setIcon(QIcon(":/res/quit.png"));
+    _moreInfoAction = new QAction(tr("ShowMore"));
+    _moreInfoAction->setCheckable(true);
+    _hideInfoAction = new QAction(tr("HideMore"));
+    _hideInfoAction->setCheckable(true);
+    _hideInfoAction->setChecked(true);
 
-    QAction *chartAction = new QAction("显示图表");
+    _chartAction = new QAction(tr("ShowChart"));
 
     _ctxMenu->addAction(_moreInfoAction);
     _ctxMenu->addAction(_hideInfoAction);
-    _ctxMenu->addAction(chartAction);
+    _ctxMenu->addAction(_chartAction);
+
+    _hmMenu = new QMenu(tr("MouseKeyboardTrack"));
+    _openHmAction = new QAction(tr("Open"));
+    _openHmAction->setCheckable(true);
+    _openHmAction->setChecked(true);
+    _closeHmAction = new QAction(tr("Close"));
+    _closeHmAction->setCheckable(true);
+    _restartHmAction = new QAction(tr("Restart"));
+
+
+    _hmMenu->addAction(_openHmAction);
+    _hmMenu->addAction(_closeHmAction);
+    _hmMenu->addAction(_restartHmAction);
+    _ctxMenu->addMenu(_hmMenu);
+
+    _selectDate = new QAction(tr("SelectDate"));
+    _ctxMenu->addAction(_selectDate);
     _ctxMenu->addAction(_quitAction);
 
-    connect(_moreInfoAction, SIGNAL(triggered()), this, SLOT(OnMoreInfoCallback()));
-    connect(_hideInfoAction, SIGNAL(triggered()), this, SLOT(OnHideInfoCallback()));
-    connect(_quitAction, SIGNAL(triggered()), this, SLOT(OnAppQuit()));
+
+    connect(_moreInfoAction, SIGNAL(triggered()), this, SLOT(onMoreInfoCallback()));
+    connect(_hideInfoAction, SIGNAL(triggered()), this, SLOT(onHideInfoCallback()));
+    connect(_quitAction, SIGNAL(triggered()), this, SLOT(onAppQuit()));
 
     _chartWidget = new ChartWidget();
 
-    QObject::connect(chartAction, &QAction::triggered, [&]{
+    QObject::connect(_chartAction, &QAction::triggered, [&]{
         _chartWidget->show();
     });
+    QObject::connect(_openHmAction, &QAction::triggered, [&]{
+        _closeHmAction->setChecked(false);
+        startKeyBoardHook();
+        startMouseHook();
+    });
+    QObject::connect(_closeHmAction, &QAction::triggered, [&]{
+        _openHmAction->setChecked(false);
+        stopKeyBoardHook();
+        stopMouseHook();
+    });
+
+    QObject::connect(_restartHmAction, &QAction::triggered, [&]{
+        stopKeyBoardHook();
+        stopMouseHook();
+        startKeyBoardHook();
+        startMouseHook();
+    });
+
 }
 
-void MainWindow::OnMoreInfoCallback()
+void MainWindow::onSelectDate()
 {
-    setFixedSize(QSize(212,75));
+
+}
+
+void MainWindow::onMoreInfoCallback()
+{
+    _hideInfoAction->setChecked(false);
+    setFixedSize(QSize(280, 100));
     _labelCpu->show();
     _labelMemory->show();
+    _labelDays->show();
+    _labelSeconds->show();
 }
 
-void MainWindow::OnHideInfoCallback()
+void MainWindow::onHideInfoCallback()
 {
-    setFixedSize(QSize(212,50));
+    _moreInfoAction->setChecked(false);
+    setFixedSize(QSize(280,50));
     _labelCpu->hide();
     _labelMemory->hide();
+    _labelDays->hide();
+    _labelSeconds->hide();
 }
 
 
-void MainWindow::OnAppQuit()
+void MainWindow::onAppQuit()
 {
    qApp->quit();
 }
 
-void MainWindow::UpdateValue()
+void MainWindow::updateValue()
 {   
     _labelKeyboard->setText("键盘次数:" + QString::number(_keynum));
 //    _config->updateTodayKeyBoardValue(_keynum);
@@ -121,7 +217,7 @@ void MainWindow::UpdateValue()
     feiker::Config::Instance().updateTodayMouseValue(_mousenum);
 }
 
-void MainWindow::TrySave()
+void MainWindow::trySave()
 {
     _step++;
     if(_step == 20){
@@ -131,7 +227,7 @@ void MainWindow::TrySave()
     }
 }
 
-void MainWindow::InitLayout()
+void MainWindow::initLayout()
 {
     _configPath = QDir::currentPath();
     _configPath += "/config.json";
@@ -146,7 +242,7 @@ void MainWindow::InitLayout()
     _mousenum = feiker::Config::Instance().getTodayMouseValue();
 #endif
 
-    setFixedSize(QSize(212,50));
+    setFixedSize(QSize(280, 50));
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SplashScreen);
 //    setWindowFlags(| Qt::WindowSystemMenuHint);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -158,40 +254,49 @@ void MainWindow::InitLayout()
 
     _labelKeyboard = new QLabel("键盘次数:" + QString::number(_keynum));
     _labelKeyboard->setStyleSheet("color:black; font:10pt;");
-    _labelKeyboard->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+//    _labelKeyboard->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelKeyboard->setFont(ft);
 
     _labelMouse = new QLabel("鼠标次数:" + QString::number(_mousenum));
     _labelMouse->setStyleSheet("color:black; font:10pt;");
-    _labelMouse->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+//    _labelMouse->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelMouse->setFont(ft);
 
     _labelUpload = new QLabel;
     _labelUpload->setText("上传:100M/s");
     _labelUpload->setStyleSheet("color:black; font:10pt;");
-    _labelUpload->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+//    _labelUpload->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelUpload->setFont(ft);
 
     _labelDownload = new QLabel;
     _labelDownload->setText("下载:10M/s");
     _labelDownload->setStyleSheet("color:black; font:10pt;");
-    _labelDownload->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+//    _labelDownload->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelDownload->setFont(ft);
 
     _labelCpu = new QLabel;
     _labelCpu->setText("CPU:10%");
     _labelCpu->setStyleSheet("color:black; font:10pt;");
-    _labelCpu->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+//    _labelCpu->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelCpu->setFont(ft);
     _labelCpu->hide();
 
     _labelMemory = new QLabel;
     _labelMemory->setText("内存:10%");
     _labelMemory->setStyleSheet("color:black; font:10pt;");
-    _labelMemory->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+//    _labelMemory->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelMemory->setFont(ft);
     _labelMemory->hide();
 
+    /// days
+    _labelDays = new QLabel(tr("Days"));
+    _labelDays->hide();
+
+    /// seconds
+    _labelSeconds = new QLabel(tr("Seconds"));
+    _labelSeconds->hide();
+
+#if 0
     QHBoxLayout *networkLayout = new QHBoxLayout();
     networkLayout->addWidget(_labelUpload);
     networkLayout->addWidget(_labelDownload);
@@ -204,11 +309,41 @@ void MainWindow::InitLayout()
     memoryLayout->addWidget(_labelCpu);
     memoryLayout->addWidget(_labelMemory);
 
+    QHBoxLayout *clockLayout = new QHBoxLayout();
+    clockLayout->addWidget(_labelDays);
+    clockLayout->addWidget(_labelSeconds);
+
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addLayout(networkLayout);
     mainLayout->addLayout(monitorLayout);
     mainLayout->addLayout(memoryLayout);
+    mainLayout->addLayout(clockLayout);
     ui->centralwidget->setLayout(mainLayout);
+#else
+    QGridLayout *statusLayout = new QGridLayout();
+    statusLayout->setAlignment(Qt::AlignLeft);
+
+    statusLayout->addWidget(_labelUpload, 0, 0);
+    statusLayout->addWidget(_labelDownload, 0, 1);
+    statusLayout->addWidget(_labelKeyboard, 1, 0);
+    statusLayout->addWidget(_labelMouse, 1, 1);
+
+    statusLayout->addWidget(_labelCpu, 2, 0);
+    statusLayout->addWidget(_labelMemory, 2, 1);
+    statusLayout->addWidget(_labelDays, 3, 0);
+    statusLayout->addWidget(_labelSeconds, 3, 1);
+
+    _catWidget = new FramePlayerWidget(this);
+    _catWidget->SetFrameCount(5);
+    _catWidget->SetFrameSize(50, 45);
+    _catWidget->LoadFrame(":/res/frames");
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_catWidget);
+    layout->addLayout(statusLayout);
+
+    ui->centralwidget->setLayout(layout);
+#endif
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -228,8 +363,12 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 MainWindow::~MainWindow()
 {
     qDebug() << "release window";
+
+    while(_dateThread->isRunning())_dateThread->requestInterruption();
+
     stopKeyBoardHook();
     stopMouseHook();
+    _catWidget->Stop();
 //    _config->saveConfig(_configPath);
 //    delete _config;
 

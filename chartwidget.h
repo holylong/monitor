@@ -38,6 +38,9 @@ public:
 
     void InitAllChartView();
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private:
     QToolBar             *_toolBar;
 

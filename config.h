@@ -124,6 +124,10 @@ namespace feiker{
             return 0;
         }
 
+        /**
+         * @brief GetAllData
+         * @return <data<keyboard, mouse>>
+         */
         QVector<QMap<QString, QMap<QString, QString>>> GetAllData(){
             QDate date = QDate::currentDate();
             QDate oldDate(2022, 1, 1);

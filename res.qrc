@@ -4,5 +4,13 @@
         <file>datas/acme_data.txt</file>
         <file>datas/boxwhisk_data.txt</file>
         <file>datas/sun_spots.txt</file>
+        <file>res/i18n/monitor_zh_CN.qm</file>
+        <file>res/frames/cat-running-0.svg</file>
+        <file>res/frames/cat-running-1.svg</file>
+        <file>res/frames/cat-running-2.svg</file>
+        <file>res/frames/cat-running-3.svg</file>
+        <file>res/frames/cat-running-4.svg</file>
+        <file>res/monitor.png</file>
+        <file>res/quit.png</file>
     </qresource>
 </RCC>

@@ -64,13 +64,14 @@ ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
     });
     _toolBar->addAction(actionTemperatureChart);
 
+#ifdef OPENGL_3D
     QAction *actionProxyChart = new QAction();
     actionProxyChart->setText("ProxyChartChart");
     connect(actionProxyChart, &QAction::triggered, [&]{
-        _stackedLayout->setCurrentIndex(6);
+        _stackedLayout->setCurrentIndex(7);
     });
     _toolBar->addAction(actionProxyChart);
-
+#endif
 
     QAction *actionQuit = new QAction();
     actionQuit->setText("Quit");
@@ -96,6 +97,16 @@ void ChartWidget::InitAllChartView()
     CreateModelDataChart();
     CreateBoxPlotChart();
     CreateTemperatureChartView();
+#ifdef OPENGL_3D
+    CreateProxyChart();
+#endif
+}
+
+void ChartWidget::closeEvent(QCloseEvent *event)
+{
+    hide();
+    qDebug() << "ChartWidget closeEvent";
+    event->ignore();
 }
 
 /**
@@ -103,7 +114,41 @@ void ChartWidget::InitAllChartView()
  */
 void ChartWidget::CreateKeyMouseChart()
 {
+#if 0
     //解析json文件
+    //创建chart
+    QLineSeries *series = new QLineSeries();
+
+    while (!stream.atEnd()) {
+        QStringList values = line.split(" ", QString::SkipEmptyParts);
+        QDateTime momentInTime;
+        momentInTime.setDate(QDate(values[0].toInt(), values[1].toInt() , 15));
+        series->append(momentInTime.toMSecsSinceEpoch(), values[2].toDouble());
+    }
+    sunSpots.close();
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->legend()->hide();
+    chart->setTitle("DataTime Chart");
+
+    QDateTimeAxis *axisX =new QDateTimeAxis;
+    axisX->setTickCount(10);
+    axisX->setFormat("MMM yyyy");
+    axisX->setTitleText("Date");
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    QValueAxis *axisY = new QValueAxis;
+    axisY->setLabelFormat("%1");
+    axisY->setTitleText("Hellow owltf");
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    _dateTimeChartView = new QChartView(chart);
+    _dateTimeChartView->setRenderHint(QPainter::Antialiasing);
+    _stackedLayout->addWidget(_dateTimeChartView);
+#endif
 }
 
 void ChartWidget::CreateProxyChart()

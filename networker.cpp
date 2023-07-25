@@ -15,6 +15,8 @@
 #include <QDebug>
 #include <stringutil.h>
 
+#include "cpumemoryprofiler.h"
+
 Networker::Networker(QThread *parent) : QThread(parent)
 {
 #ifdef _WIN32
@@ -38,6 +40,10 @@ Networker::Networker(QThread *parent) : QThread(parent)
 void Networker::run()
 {
     while(1){
+        FILETIME preIdleTime;
+        FILETIME preKernelTime;
+        FILETIME preUserTime;
+        GetSystemTimes (&preIdleTime, &preKernelTime, &preUserTime);
 #ifdef _WIN32
         Sleep(2000);
 #else
@@ -45,6 +51,10 @@ void Networker::run()
 #endif 
         QtGetIfTable();
         GetAllTraffic();
+
+        // memory cpu
+        emit reportCpuMemory(CpuMemoryProfiler::GetCpuUsage(preKernelTime, preUserTime, preIdleTime),
+                             QString::number(CpuMemoryProfiler::GetMemoryUsage(), 10, 2));
     }
 }
 
@@ -173,7 +183,7 @@ void Networker::GetAllTraffic()
         out += QString::number(_out_speed / 2) + " B/s";
     }
 
-    emit ReportNetworker(in, out);
+    emit reportNetworker(in, out);
 }
 
 #ifdef _WIN32

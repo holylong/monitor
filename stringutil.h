@@ -13,6 +13,14 @@ namespace feiker{
 
             return false;
         }
+
+        static QString FormatToTime(qint64 ms, qint64 ss, qint64 mm, qint64 hh, qint64 dd){
+            qint64 day = ms / dd;
+            qint64 hour = (ms-day*dd)/hh;
+            qint64 minute = (ms - day*dd)-hour;
+
+            return "";
+        }
     };
 }
 
