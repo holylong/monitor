@@ -42,10 +42,14 @@ namespace feiker{
                 {
                     qDebug() << "open fileok";
                     QByteArray bytes = file.readAll();
+                    qDebug() << "file read pass";
                     QJsonDocument doc;
                     doc = QJsonDocument::fromJson(bytes);
+                    qDebug() << "to json pass";
                     _obj = doc.object();
-                    qDebug() << "bytes len:" << bytes.length() << " data:" << bytes.toStdString().c_str() << " " << doc.toJson().toStdString().c_str();
+                    qDebug() << "to obj pass";
+                    qDebug() << "bytes len:" << bytes.length() << " " << doc.toJson();
+                             //<< " data:" << bytes.toStdString().c_str();// << " " << doc.toJson().toStdString().c_str();
                     file.close();
                     return 0;
                 }

@@ -67,6 +67,10 @@ void FramePlayerWidget::Play()
 
 }
 
+void FramePlayerWidget::onUpdateCpuUsage(double cpu)
+{
+    UpdateCpuUsage(cpu);
+}
 
 void FramePlayerWidget::UpdateCpuUsage(double cpu)
 {

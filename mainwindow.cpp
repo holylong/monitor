@@ -183,7 +183,7 @@ void MainWindow::onSelectDate()
 void MainWindow::onMoreInfoCallback()
 {
     _hideInfoAction->setChecked(false);
-    setFixedSize(QSize(280, 100));
+    setFixedSize(QSize(299, 100));
     _labelCpu->show();
     _labelMemory->show();
     _labelDays->show();
@@ -193,7 +193,7 @@ void MainWindow::onMoreInfoCallback()
 void MainWindow::onHideInfoCallback()
 {
     _moreInfoAction->setChecked(false);
-    setFixedSize(QSize(280,50));
+    setFixedSize(QSize(299,58));
     _labelCpu->hide();
     _labelMemory->hide();
     _labelDays->hide();
@@ -242,7 +242,7 @@ void MainWindow::initLayout()
     _mousenum = feiker::Config::Instance().getTodayMouseValue();
 #endif
 
-    setFixedSize(QSize(280, 50));
+    setFixedSize(QSize(299, 58));
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SplashScreen);
 //    setWindowFlags(| Qt::WindowSystemMenuHint);
     setAttribute(Qt::WA_TranslucentBackground);

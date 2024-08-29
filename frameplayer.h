@@ -31,6 +31,7 @@ public:
 protected slots:
         void FrameChangedSlot(int index);
         void UpdateCpuUsage(double cpu);
+        void onUpdateCpuUsage(double cpu);
 
     private:
     int _frameRate;

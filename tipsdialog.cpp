@@ -18,11 +18,11 @@ bool TipsDialog::event(QEvent *event)
 {
     switch (event->type()) {
         case QEvent::Show:
-            qDebug() << "window is show";
+            qDebug() << "dialog is show";
             QTimer::singleShot(2000, this, SLOT(hide()));
             break;
         case QEvent::Hide:
-            qDebug() << "window is hide";
+            qDebug() << "dialog is hide";
             break;
     }
 

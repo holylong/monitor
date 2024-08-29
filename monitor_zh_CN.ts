@@ -5,18 +5,18 @@
     <name>Dialog</name>
     <message>
         <location filename="tipsdialog.ui" line="17"/>
-        <location filename="build_ninja/monitor_autogen/include_Debug/ui_tipsdialog.h" line="49"/>
-        <location filename="build_ninja/monitor_autogen/include_Release/ui_tipsdialog.h" line="49"/>
+        <location filename="build_ninja/monitor_autogen/include/ui_tipsdialog.h" line="49"/>
+        <location filename="build_vs/monitor_autogen/include_Debug/ui_tipsdialog.h" line="49"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="tipsdialog.ui" line="32"/>
         <location filename="tipsdialog.ui" line="48"/>
-        <location filename="build_ninja/monitor_autogen/include_Debug/ui_tipsdialog.h" line="50"/>
-        <location filename="build_ninja/monitor_autogen/include_Debug/ui_tipsdialog.h" line="51"/>
-        <location filename="build_ninja/monitor_autogen/include_Release/ui_tipsdialog.h" line="50"/>
-        <location filename="build_ninja/monitor_autogen/include_Release/ui_tipsdialog.h" line="51"/>
+        <location filename="build_ninja/monitor_autogen/include/ui_tipsdialog.h" line="50"/>
+        <location filename="build_ninja/monitor_autogen/include/ui_tipsdialog.h" line="51"/>
+        <location filename="build_vs/monitor_autogen/include_Debug/ui_tipsdialog.h" line="50"/>
+        <location filename="build_vs/monitor_autogen/include_Debug/ui_tipsdialog.h" line="51"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25,8 +25,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.ui" line="14"/>
-        <location filename="build_ninja/monitor_autogen/include_Debug/ui_mainwindow.h" line="40"/>
-        <location filename="build_ninja/monitor_autogen/include_Release/ui_mainwindow.h" line="40"/>
+        <location filename="build_ninja/monitor_autogen/include/ui_mainwindow.h" line="40"/>
+        <location filename="build_vs/monitor_autogen/include_Debug/ui_mainwindow.h" line="40"/>
         <source>MainWindow</source>
         <translation type="unfinished"></translation>
     </message>

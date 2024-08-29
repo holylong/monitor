@@ -5,9 +5,9 @@ project(monitor VERSION 0.1 LANGUAGES CXX)
 option(CMAKE_BUILD_RELEASE "debug or release" ON)
 
 if(CMAKE_BUILD_RELEASE)
-add_definitions(-DBUILD_RELEASE)
-set(CMAKE_BUILD_TYPE "RELEASE")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
+	add_definitions(-DBUILD_RELEASE)
+	set(CMAKE_BUILD_TYPE "RELEASE")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -32,8 +32,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Charts DataVisualization LinguistTools WinExtras REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Charts DataVisualization LinguistTools WinExtras REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Charts DataVisualization LinguistTools REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Charts DataVisualization LinguistTools REQUIRED)
 
 set(TS_FILES monitor_zh_CN.ts)
 
@@ -117,12 +117,15 @@ set(PROJECT_SOURCES
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    message(STATUS "is version qt 6")
     qt_add_executable(monitor
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 else()
+    message(STATUS "is not version qt 6")
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WinExtras REQUIRED)
     if(ANDROID)
         add_library(monitor SHARED
             ${PROJECT_SOURCES}
@@ -137,8 +140,15 @@ endif()
 
 target_link_libraries(monitor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                       Qt${QT_VERSION_MAJOR}::Charts
-                                      Qt${QT_VERSION_MAJOR}::WinExtras
                                       Qt${QT_VERSION_MAJOR}::DataVisualization)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    message(STATUS "==>> is qt version ${QT_VERSION_MAJOR}")
+else()
+    message(STATUS "==>> is qt version ${QT_VERSION_MAJOR}")
+    target_link_libraries(monitor PRIVATE Qt${QT_VERSION_MAJOR}::WinExtras)
+endif()
+
 
 set_target_properties(monitor PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

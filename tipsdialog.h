@@ -35,7 +35,7 @@ private:
         QTime delTime = QTime::currentTime().addMSecs(msec);
         while( QTime::currentTime() < delTime )
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-#elif define(OFFICIAL)
+#elif defined(OFFICIAL)
         QElapsedTimer t;
         t.start();
         while(t.elapsed()<msec);

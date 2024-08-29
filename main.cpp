@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QTranslator>
 #include <signal.h>
-
+#include <QMessageBox>
 #include "tipsdialog.h"
 
 #ifdef BUILD_RELEASE
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     TipsDialog dialog(&w);
 //    TipsDialog dialog;
-    QHotkey hotkey(QKeySequence("Ctrl+Alt+Q"), true, &app); //The hotkey will be automatically registered
+    QHotkey hotkey(QKeySequence("Ctrl+Alt+B"), true, &app); //The hotkey will be automatically registered
     if(hotkey.isRegistered()){
         QString str = "hotkey regist ok";
         qDebug() << str;
@@ -55,7 +55,11 @@ int main(int argc, char *argv[])
     QObject::connect(&hotkey, &QHotkey::activated, qApp, [&](){
         qDebug() << "Hotkey Activated - the application will quit now";
 
+        QMessageBox msgBox;
+        msgBox.setText("Error! HotKey is already register=> Ctrl + Alt + B");
+        msgBox.show();
         qApp->quit();
+
     });
     w.show();
     signal(SIGINT, CtrlC);
