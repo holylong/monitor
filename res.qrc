@@ -12,5 +12,6 @@
         <file>res/frames/cat-running-4.svg</file>
         <file>res/monitor.png</file>
         <file>res/quit.png</file>
+        <file>res/backwnd.svg</file>
     </qresource>
 </RCC>

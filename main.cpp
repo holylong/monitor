@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <QDir>
 #include "tipsdialog.h"
+#include "splashwindow.h"
 
 #ifdef BUILD_RELEASE
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
@@ -54,19 +55,55 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w;
-    TipsDialog dialog(&w);
+    // TipsDialog dialog(&w);
+
+
+    // 创建背景图像
+    // QPixmap splashPixmap(400, 300);
+    // splashPixmap.fill(Qt::white); // 背景颜色为白色
+    QPixmap splashPixmap;
+    splashPixmap.load(":/res/backwnd.svg");
+
+
+    // 使用默认屏幕创建 SplashWindow
+    QScreen *screen = QGuiApplication::primaryScreen();
+    SplashWindow splash(screen, splashPixmap);
+    splash.setGeometry(QGuiApplication::primaryScreen()->geometry().center().x() - 200,
+                       QGuiApplication::primaryScreen()->geometry().center().y() - 150,
+                       400, 300); // 居中显示
+    splash.show();
+
+    // 创建主窗口
+    //QMainWindow mainWindow;
+    //mainWindow.setWindowTitle("Main Window");
+    //mainWindow.resize(800, 600);
+
+    // 连接信号槽，初始化完成时启动主窗口
+    QObject::connect(&splash, &SplashWindow::splashClosed, [&w]() {
+        w.show();
+    });
+
+    // 模拟初始化过程
+    QTimer::singleShot(3000, [&splash]() {
+        // 初始化完成，发送关闭信号
+        splash.closeSplash();
+    });
+
+
+
+
 //    TipsDialog dialog;
     QHotkey hotkey(QKeySequence("Ctrl+Alt+B"), true, &app); //The hotkey will be automatically registered
     if(hotkey.isRegistered()){
         QString str = "hotkey regist ok";
         qDebug() << str;
-        dialog.setText(str);
-        dialog.show();
+        //dialog.setText(str);
+        //dialog.show();
     }else{
         QString str = "hotkey regist failed";
         qDebug() << str;
-        dialog.setText(str);
-        dialog.show();
+        //dialog.setText(str);
+        //dialog.show();
     }
 
     QObject::connect(&hotkey, &QHotkey::activated, qApp, [&](){
@@ -81,7 +118,7 @@ int main(int argc, char *argv[])
     
     setAutoStart(true);
 
-    w.show();
+    //w.show();
     signal(SIGINT, CtrlC);
     atexit(Release);
     return app.exec();

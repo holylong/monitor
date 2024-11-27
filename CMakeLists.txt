@@ -83,6 +83,8 @@ set(PROJECT_SOURCES
         tipsdialog.cpp
         tipsdialog.h
 
+        splashwindow.h
+
         # date thread
         qdatethread.h qdatethread.cpp
 

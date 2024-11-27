@@ -373,7 +373,7 @@ void MainWindow::initLayout()
 
     _catWidget = new FramePlayerWidget(this);
     _catWidget->SetFrameCount(5);
-    _catWidget->SetFrameSize(50, 45);
+    _catWidget->SetFrameSize(65, 45);
     _catWidget->LoadFrame(":/res/frames");
 
     QHBoxLayout *layout = new QHBoxLayout();
