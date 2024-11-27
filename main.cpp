@@ -6,6 +6,8 @@
 #include <QTranslator>
 #include <signal.h>
 #include <QMessageBox>
+#include <QSettings>
+#include <QDir>
 #include "tipsdialog.h"
 
 #ifdef BUILD_RELEASE
@@ -19,6 +21,21 @@ void CtrlC(int){
 
 void Release(){
     qDebug() << "release something after";
+}
+
+
+void setAutoStart(bool enable) {
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+                       QSettings::NativeFormat);
+    QString applicationName = QApplication::applicationName();
+    QString applicationPath = QDir::toNativeSeparators(QApplication::applicationFilePath());
+
+    if (enable) {
+        qDebug() << "applicationName:" << applicationName << "applicationPath:" << applicationPath;
+        settings.setValue(applicationName, applicationPath);
+    } else {
+        settings.remove(applicationName);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -61,6 +78,9 @@ int main(int argc, char *argv[])
         qApp->quit();
 
     });
+    
+    setAutoStart(true);
+
     w.show();
     signal(SIGINT, CtrlC);
     atexit(Release);

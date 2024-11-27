@@ -50,6 +50,7 @@ protected:
 
 signals:
     void reportNetworker(const QString& in, const QString& out);
+    void reportNetworker(int in, int out);
     void reportCpuMemory(double cpu, const QString& memo);
 
 private:

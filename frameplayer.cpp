@@ -94,7 +94,7 @@ void FramePlayerWidget::UpdateCpuUsage(double cpu)
 void FramePlayerWidget::FrameChangedSlot(int index)
 {
     // if(index%_step == 0){
-        qDebug() << "FrameChangedSlot:" << " count:" << index << " inx:" << index%5;
+        // qDebug() << "FrameChangedSlot:" << " count:" << index << " inx:" << index%5;
     // }
     
     _label->setPixmap(_frames[index%5]);

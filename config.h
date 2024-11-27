@@ -84,11 +84,10 @@ namespace feiker{
 
         void updateTodayKeyBoardValue(long value){
               _kvalue = value;
-//            QTime time = QTime::currentTime();
-//            qDebug() << time.toString("hh:mm:ss t");
             QDate date = QDate::currentDate();
             QString dateStr = date.toString("yyyy-MM-dd");
-            _innerObj.insert("keyboard", _kvalue);
+            // _innerObj.insert("keyboard", QJsonValue::fromVariant(QVariant::fromValue(_kvalue)));
+            _innerObj.insert("keyboard", QJsonValue(static_cast<qint64>(_kvalue)));
             _obj.insert(dateStr, _innerObj);
         }
 
@@ -96,7 +95,8 @@ namespace feiker{
             _mvalue = value;
             QDate date = QDate::currentDate();
             QString dateStr = date.toString("yyyy-MM-dd");
-            _innerObj.insert("mouse", _mvalue);
+            // _innerObj.insert("mouse", QJsonValue::fromVariant(QVariant::fromValue(_mvalue)));
+            _innerObj.insert("mouse", QJsonValue(static_cast<qint64>(_mvalue)));
             _obj.insert(dateStr, _innerObj);
         }
 
@@ -107,6 +107,7 @@ namespace feiker{
                 _innerObj = _obj[dateStr].toObject();
                 if(_innerObj.contains("keyboard"))
                 {
+                    // return _innerObj.value("keyboard").toString().toLong();
                     return _innerObj.value("keyboard").toInt();
                 }
             }
@@ -135,6 +136,8 @@ namespace feiker{
         QVector<QMap<QString, QMap<QString, QString>>> GetAllData(){
             QDate date = QDate::currentDate();
             QDate oldDate(2022, 1, 1);
+
+            return QVector<QMap<QString, QMap<QString, QString>>>();
         }
 
     private:

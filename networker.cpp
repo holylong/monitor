@@ -184,6 +184,8 @@ void Networker::GetAllTraffic()
     }
 
     emit reportNetworker(in, out);
+
+    emit reportNetworker(_in_speed, _out_speed);
 }
 
 #ifdef _WIN32

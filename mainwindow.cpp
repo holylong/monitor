@@ -13,6 +13,7 @@
 #include <QGridLayout>
 #include <networker.h>
 #include <QMenu>
+#include <QStandardPaths>
 #include <QSystemTrayIcon>
 
 #include "frameplayer.h"
@@ -58,6 +59,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(_netWorker, SIGNAL(reportNetworker(const QString&, const QString&)),
     this, SLOT(onUpdateNetworker(const QString&, const QString&)));
+
+    QObject::connect(_netWorker, SIGNAL(reportNetworker(int, int)),
+    this, SLOT(onUpdateSpeedColor(int, int)));
+
+
     QObject::connect(_netWorker, SIGNAL(reportCpuMemory(double, const QString&)),
     this, SLOT(onUpdateCpuMemory(double, const QString&)));
 
@@ -76,6 +82,37 @@ void MainWindow::onUpdateNetworker(const QString& in, const QString& out)
 {
     _labelUpload->setText(out);
     _labelDownload->setText(in);
+}
+
+void MainWindow::setUploadSpeedColor(int speed){
+    speed /= 2;
+    if(speed < 1024){
+        _labelUpload->setStyleSheet("color: #456700; background-color:transparent;");  //1K
+    }else if(speed < 1024*1024){
+        _labelUpload->setStyleSheet("color: #808000; background-color:transparent;");  //1M
+    }else if(speed < 1024*1024*3){
+        _labelUpload->setStyleSheet("color: red; background-color:transparent;");      //3M
+    }else{
+        _labelUpload->setStyleSheet("color: purple; background-color:transparent;");   //3M>
+    }
+}
+
+void MainWindow::setDownloadSpeedColor(int speed){
+    speed /= 2;
+    if(speed < 1024){
+        _labelDownload->setStyleSheet("color: #456700; background-color:transparent;");
+    }else if(speed < 1024*1024){
+        _labelDownload->setStyleSheet("color: #808000; background-color:transparent;");
+    }else if(speed < 1024*1024*3){
+        _labelDownload->setStyleSheet("color: red; background-color:transparent;");
+    }else{
+        _labelDownload->setStyleSheet("color: purple; background-color:transparent;");
+    }
+}
+
+void MainWindow::onUpdateSpeedColor(int in, int out){
+    setDownloadSpeedColor(in);
+    setUploadSpeedColor(out);
 }
 
 void MainWindow::onUpdateCpuMemory(double cpu, const QString& memo)
@@ -183,7 +220,7 @@ void MainWindow::onSelectDate()
 void MainWindow::onMoreInfoCallback()
 {
     _hideInfoAction->setChecked(false);
-    setFixedSize(QSize(299, 100));
+    setFixedSize(QSize(328, 110));
     _labelCpu->show();
     _labelMemory->show();
     _labelDays->show();
@@ -193,7 +230,7 @@ void MainWindow::onMoreInfoCallback()
 void MainWindow::onHideInfoCallback()
 {
     _moreInfoAction->setChecked(false);
-    setFixedSize(QSize(299,58));
+    setFixedSize(QSize(328,58));
     _labelCpu->hide();
     _labelMemory->hide();
     _labelDays->hide();
@@ -229,7 +266,7 @@ void MainWindow::trySave()
 
 void MainWindow::initLayout()
 {
-    _configPath = QDir::currentPath();
+    _configPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     _configPath += "/config.json";
 #if 0
     _config = new feiker::Config;
@@ -242,7 +279,7 @@ void MainWindow::initLayout()
     _mousenum = feiker::Config::Instance().getTodayMouseValue();
 #endif
 
-    setFixedSize(QSize(299, 58));
+    setFixedSize(QSize(320, 58));
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SplashScreen);
 //    setWindowFlags(| Qt::WindowSystemMenuHint);
     setAttribute(Qt::WA_TranslucentBackground);

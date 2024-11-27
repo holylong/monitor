@@ -33,7 +33,8 @@ public:
 
 private:
     void initLayout();
-
+    void setUploadSpeedColor(int speed);
+    void setDownloadSpeedColor(int speed);
     void trySave();
     /**
      * @brief 更新记录值
@@ -49,6 +50,7 @@ private:
 
 private slots:
     void onUpdateNetworker(const QString& in, const QString& out);
+    void onUpdateSpeedColor(int in, int out);
     void onUpdateCpuMemory(double cpu, const QString& memo);
     void onMoreInfoCallback();
     void onAppQuit();
