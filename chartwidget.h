@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <chart/zoomlinechartview.h>
+#include <QChart>
+#include <QtCharts>
+#include <QChartView>
 
 //https://doc.qt.io/qt-5/qtcharts-customchart-example.html chart
 //https://blog.csdn.net/birenxiaofeigg/article/details/95614311 chart
@@ -13,9 +16,9 @@
 class QToolBar;
 class QStackedLayout;
 class TableWidget;
-namespace QtCharts {
-    class QChartView;
-}
+// namespace QtCharts {
+//     class QChartView;
+// }
 
 class ChartWidget : public QWidget
 {
@@ -44,13 +47,13 @@ protected:
 private:
     QToolBar             *_toolBar;
 
-    QtCharts::QChartView *_areaChartView;
-    QtCharts::QChartView *_splineChartView;
+    QChartView *_areaChartView;
+    QChartView *_splineChartView;
     ZoomLineChartView    *_zoomLineChartView;
-    QtCharts::QChartView *_dateTimeChartView;
-    QtCharts::QChartView *_boxPlotChartView;
-    QtCharts::QChartView *_proxyChartView;
-    QtCharts::QChartView *_temperatureChartView;
+    QChartView *_dateTimeChartView;
+    QChartView *_boxPlotChartView;
+    QChartView *_proxyChartView;
+    QChartView *_temperatureChartView;
     TableWidget          *_modelDataWidget;
 
     QStackedLayout       *_stackedLayout;

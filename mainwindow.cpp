@@ -288,6 +288,7 @@ void MainWindow::initLayout()
     // font
     QFont ft;
     ft.setPointSize(11);
+    ft.setWeight(QFont::Weight(4));
 
     _labelKeyboard = new QLabel("键盘次数:" + QString::number(_keynum));
     _labelKeyboard->setStyleSheet("color:black; font:10pt;");

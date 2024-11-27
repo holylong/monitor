@@ -28,6 +28,7 @@
 ****************************************************************************/
 
 #include "boxdatareader.h"
+#include <QtMath>
 
 BoxDataReader::BoxDataReader(QIODevice *device) :
     QTextStream(device)
@@ -48,7 +49,7 @@ QBoxSet *BoxDataReader::readBox()
     //! [1]
 
     //! [2]
-    QStringList strList = line.split(" ", QString::SkipEmptyParts);
+    QStringList strList = line.split(" ", Qt::SkipEmptyParts);
     //! [2]
 
     //! [3]
@@ -56,7 +57,7 @@ QBoxSet *BoxDataReader::readBox()
     for (int i = 1; i < strList.count(); i++)
         sortedList.append(strList.at(i).toDouble());
 
-    qSort(sortedList.begin(), sortedList.end());
+    std::sort(sortedList.begin(), sortedList.end());
     //! [3]
 
     int count = sortedList.count();

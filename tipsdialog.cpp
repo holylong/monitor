@@ -40,14 +40,14 @@ void TipsDialog::setText(QString& text)
     ui->labelTitle->setText(title);
 
     QFont fontTitle;
-    fontTitle.setWeight(4);
+    fontTitle.setWeight(QFont::Weight(4));
     fontTitle.setPointSize(20);
     ui->labelTitle->setFont(fontTitle);
 
     ui->label->setScaledContents(true);
     ui->label->setText(text);
     QFont fontCtx;
-    fontCtx.setWeight(4);
+    fontCtx.setWeight(QFont::Weight(4));
     fontCtx.setPointSize(15);
     ui->label->setFont(fontCtx);
 

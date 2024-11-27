@@ -28,8 +28,8 @@
 ****************************************************************************/
 
 #include "variantbardataproxy.h"
-
-using namespace QtDataVisualization;
+#include <QtDataVisualization>
+// using namespace QtDataVisualization;
 
 VariantBarDataProxy::VariantBarDataProxy() :
     QBarDataProxy()

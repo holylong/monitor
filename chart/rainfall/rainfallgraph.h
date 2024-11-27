@@ -32,8 +32,8 @@
 
 #include "variantbardataproxy.h"
 #include <QtDataVisualization/q3dbars.h>
-
-using namespace QtDataVisualization;
+#include <QtDataVisualization>
+// using namespace QtDataVisualization;
 
 class RainfallGraph : public QObject
 {

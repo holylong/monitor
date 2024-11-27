@@ -12,7 +12,7 @@ FramePlayerWidget::FramePlayerWidget(QWidget *parent):QWidget(parent)
     // setAttribute(Qt::WA_TranslucentBackground);
     
     QHBoxLayout* layout = new QHBoxLayout();
-    layout->setMargin(0);
+    // layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(_label);
 //    setStyleSheet("background-color:rgb(122,122,122);");

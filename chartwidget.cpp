@@ -7,6 +7,7 @@
 #include <chart/rainfall/rainfallgraph.h>
 #include <chart/tablewidget.h>
 #include <chart/boxdatareader.h>
+#include <QChartView>
 
 
 ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
@@ -335,7 +336,7 @@ void ChartWidget::CreateDateTimeChart()
         QString line = stream.readLine();
         if (line.startsWith("#") || line.startsWith(":"))
             continue;
-        QStringList values = line.split(" ", QString::SkipEmptyParts);
+        QStringList values = line.split(" ", Qt::SkipEmptyParts);
         QDateTime momentInTime;
         momentInTime.setDate(QDate(values[0].toInt(), values[1].toInt() , 15));
         series->append(momentInTime.toMSecsSinceEpoch(), values[2].toDouble());
