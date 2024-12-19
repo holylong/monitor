@@ -280,10 +280,13 @@ void MainWindow::initLayout()
 #endif
 
     setFixedSize(QSize(320, 58));
-    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SplashScreen);
+    // setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SplashScreen);
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
+                   | Qt::Tool);
 //    setWindowFlags(| Qt::WindowSystemMenuHint);
     setAttribute(Qt::WA_TranslucentBackground);
-    setStyleSheet("QWidget#centralwidget{border-image:url(:/res/background.bmp); border-radius:5px;}");
+    // setStyleSheet("QWidget#centralwidget{border-image:url(:/res/background.bmp); border-radius:5px;}");
+    // setStyleSheet("font-size: 16px; border-radius:5px; color: white; background-color: rgba(0, 0, 0, 150); padding: 10px;");
 
     // font
     QFont ft;
@@ -291,37 +294,37 @@ void MainWindow::initLayout()
     ft.setWeight(QFont::Weight(4));
 
     _labelKeyboard = new QLabel("键盘次数:" + QString::number(_keynum));
-    _labelKeyboard->setStyleSheet("color:black; font:10pt;");
+    _labelKeyboard->setStyleSheet("font-size: 16px; border-radius:5px; color: darkblue; background-color: transparent;");
 //    _labelKeyboard->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelKeyboard->setFont(ft);
 
     _labelMouse = new QLabel("鼠标次数:" + QString::number(_mousenum));
-    _labelMouse->setStyleSheet("color:black; font:10pt;");
+    _labelMouse->setStyleSheet("font-size: 16px; border-radius:5px; color: darkblue; background-color: transparent;");
 //    _labelMouse->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelMouse->setFont(ft);
 
     _labelUpload = new QLabel;
     _labelUpload->setText("上传:100M/s");
-    _labelUpload->setStyleSheet("color:black; font:10pt;");
+    _labelUpload->setStyleSheet("font-size: 16px; border-radius:5px; color: gray; background-color: rgba(0, 0, 0, 150); padding: 10px;");
 //    _labelUpload->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelUpload->setFont(ft);
 
     _labelDownload = new QLabel;
     _labelDownload->setText("下载:10M/s");
-    _labelDownload->setStyleSheet("color:black; font:10pt;");
+    _labelDownload->setStyleSheet("font-size: 16px; border-radius:5px; color: gray; background-color: rgba(0, 0, 0, 150); padding: 10px;");
 //    _labelDownload->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelDownload->setFont(ft);
 
     _labelCpu = new QLabel;
     _labelCpu->setText("CPU:10%");
-    _labelCpu->setStyleSheet("color:black; font:10pt;");
+    _labelCpu->setStyleSheet("font-size: 16px; border-radius:5px; color: gray; background-color: transparent;");
 //    _labelCpu->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelCpu->setFont(ft);
     _labelCpu->hide();
 
     _labelMemory = new QLabel;
     _labelMemory->setText("内存:10%");
-    _labelMemory->setStyleSheet("color:black; font:10pt;");
+    _labelMemory->setStyleSheet("font-size: 16px; border-radius:5px; color: gray; background-color: transparent;");
 //    _labelMemory->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelMemory->setFont(ft);
     _labelMemory->hide();
