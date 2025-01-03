@@ -2,12 +2,25 @@ cmake_minimum_required(VERSION 3.5)
 
 project(monitor VERSION 0.1 LANGUAGES CXX)
 
-option(CMAKE_BUILD_RELEASE "debug or release" OFF)
+option(CMAKE_BUILD_RELEASE "debug or release" ON)
 
 if(CMAKE_BUILD_RELEASE)
 	add_definitions(-DBUILD_RELEASE)
 	set(CMAKE_BUILD_TYPE "RELEASE")
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
+	#clang++ -o my_program.exe my_program.cpp -Wl,/SUBSYSTEM:WINDOWS
+	#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS" )
+	# 检测编译器类型
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		# 如果是 Clang，使用 -Wl,/SUBSYSTEM:WINDOWS
+		message(STATUS "=> is clang")
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,/SUBSYSTEM:WINDOWS")
+	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		# 如果是 MSVC，使用 /SUBSYSTEM:WINDOWS
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
+	else()
+		# 其他编译器（如 GCC），可以在这里添加额外的处理
+		message(WARNING "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}")
+	endif()
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -37,7 +50,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Charts DataVisualization L
 
 set(TS_FILES monitor_zh_CN.ts)
 
-if(MSVC)
+if(WIN32)
 file(GLOB hotkey_SRC ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey_win.cpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey.cpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey.h
@@ -52,7 +65,7 @@ file(GLOB hotkey_SRC ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey_mac.cpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey.cpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey.h
                 ${CMAKE_CURRENT_SOURCE_DIR}/QHotKey/qhotkey_p.h)
-endif(MSVC)
+endif(WIN32)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/QHotKey)
 
@@ -162,6 +175,6 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(monitor)
 endif()
 
-if(MSVC)
+if(WIN32)
 target_link_libraries(monitor PRIVATE iphlpapi)
-endif(MSVC)
+endif(WIN32)

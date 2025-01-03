@@ -294,12 +294,12 @@ void MainWindow::initLayout()
     ft.setWeight(QFont::Weight(4));
 
     _labelKeyboard = new QLabel("键盘次数:" + QString::number(_keynum));
-    _labelKeyboard->setStyleSheet("font-size: 16px; border-radius:5px; color: darkblue; background-color: transparent;");
+    _labelKeyboard->setStyleSheet("font-size: 16px; border-radius:5px; color: #3fc2f8; background-color: transparent;");
 //    _labelKeyboard->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelKeyboard->setFont(ft);
 
     _labelMouse = new QLabel("鼠标次数:" + QString::number(_mousenum));
-    _labelMouse->setStyleSheet("font-size: 16px; border-radius:5px; color: darkblue; background-color: transparent;");
+    _labelMouse->setStyleSheet("font-size: 16px; border-radius:5px; color: #3fc2f8; background-color: transparent;");
 //    _labelMouse->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
     _labelMouse->setFont(ft);
 

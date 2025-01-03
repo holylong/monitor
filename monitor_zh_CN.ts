@@ -5,6 +5,8 @@
     <name>Dialog</name>
     <message>
         <location filename="TipsDialog.ui" line="17"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/monitor_autogen/include/ui_tipsdialog.h" line="49"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Release/monitor_autogen/include/ui_tipsdialog.h" line="49"/>
         <location filename="build_ninja/monitor_autogen/include/ui_tipsdialog.h" line="49"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
@@ -12,6 +14,10 @@
     <message>
         <location filename="TipsDialog.ui" line="32"/>
         <location filename="TipsDialog.ui" line="48"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/monitor_autogen/include/ui_tipsdialog.h" line="50"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/monitor_autogen/include/ui_tipsdialog.h" line="51"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Release/monitor_autogen/include/ui_tipsdialog.h" line="50"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Release/monitor_autogen/include/ui_tipsdialog.h" line="51"/>
         <location filename="build_ninja/monitor_autogen/include/ui_tipsdialog.h" line="50"/>
         <location filename="build_ninja/monitor_autogen/include/ui_tipsdialog.h" line="51"/>
         <source>TextLabel</source>
@@ -22,6 +28,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.ui" line="14"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/monitor_autogen/include/ui_mainwindow.h" line="40"/>
+        <location filename="build/Desktop_Qt_6_8_0_MSVC2022_64bit-Release/monitor_autogen/include/ui_mainwindow.h" line="40"/>
         <location filename="build_ninja/monitor_autogen/include/ui_mainwindow.h" line="40"/>
         <source>MainWindow</source>
         <translation type="unfinished"></translation>
@@ -85,13 +93,13 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="75"/>
-        <location filename="mainwindow.cpp" line="329"/>
+        <location filename="mainwindow.cpp" line="333"/>
         <source>Days</source>
         <translation type="unfinished">剩余天数</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="76"/>
-        <location filename="mainwindow.cpp" line="333"/>
+        <location filename="mainwindow.cpp" line="337"/>
         <source>Seconds</source>
         <oldsource>Seconds:</oldsource>
         <translation type="unfinished">倒计时</translation>
