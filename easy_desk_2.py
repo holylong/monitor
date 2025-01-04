@@ -4,8 +4,10 @@ from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QListWidget, QListWidgetItem,
     QLineEdit, QLabel, QHBoxLayout, QPushButton
 )
-from PyQt5.QtGui import QIcon, QFont, QColor
+from PyQt5.QtGui import QIcon, QFont, QColor, QPixmap
 from PyQt5.QtCore import Qt
+import win32gui  # 用于图标提取
+import win32com.client  # 用于解析.lnk文件
 
 
 class DesktopIconManager(QWidget):
@@ -66,7 +68,7 @@ class DesktopIconManager(QWidget):
             else:
                 self.add_list_item(item, item_path, "文件")  # 添加其他文件
 
-    def add_list_item(self, name, path, item_type):
+    def add_list_item_simple(self, name, path, item_type):
         """添加图标项到列表中"""
         item = QListWidgetItem(f"{name} [{item_type}]")
         item.setData(Qt.UserRole, path)  # 存储完整路径
@@ -75,6 +77,44 @@ class DesktopIconManager(QWidget):
         else:
             item.setIcon(QIcon("res/app_icon.svg"))  # 默认程序图标
         self.list_widget.addItem(item)
+
+    def add_list_item(self, name, path, item_type):
+        """添加图标项到列表中"""
+        item = QListWidgetItem(f"{name} [{item_type}]")
+        item.setData(Qt.UserRole, path)  # 存储完整路径
+
+        icon = self.get_icon(path, item_type)
+        if icon:
+            item.setIcon(icon)
+
+        self.list_widget.addItem(item)
+
+    def get_icon(self, path, item_type):
+        """根据路径和类型获取图标"""
+        if item_type == "文件夹":
+            return QIcon.fromTheme('folder')  # 使用系统默认文件夹图标
+
+        try:
+            if path.endswith(".lnk"):
+                # 解析.lnk文件并获取目标路径
+                shell = win32com.client.Dispatch("WScript.Shell")
+                shortcut = shell.CreateShortcut(path)
+                target_path = shortcut.TargetPath
+                path = target_path  # 更新path为实际目标路径
+
+            # 提取图标
+            large, small = win32gui.ExtractIconEx(path, 0)
+            if small:  # 如果成功提取了图标
+                hicon = small[0]  # 获取小图标句柄
+                pixmap = QPixmap.fromWinHICON(hicon)
+                icon = QIcon(pixmap)
+                win32gui.DestroyIcon(hicon)  # 销毁图标句柄以释放资源
+                return icon
+        except Exception as e:
+            print(f"无法提取 {path} 的图标: {e}")
+
+        # 如果失败，则返回默认图标
+        return QIcon("res/app_icon.svg") if item_type != "文件夹" else QIcon("res/folder_icon.svg")
 
     def filter_icons(self, text):
         """根据搜索栏过滤图标"""
